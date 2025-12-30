@@ -106,11 +106,17 @@ func (c *chromeWebView) Navigate(url string) {
 	c.page.MustWaitLoad()
 
 	// リスナーが設定されている場合は再設定
+	// デッドロック防止のためリストをコピーしてからロックを解放
 	c.mu.RLock()
+	listenerIDs := make([]string, 0, len(c.listeners))
 	for elementID := range c.listeners {
-		c.setupListener(elementID)
+		listenerIDs = append(listenerIDs, elementID)
 	}
 	c.mu.RUnlock()
+
+	for _, elementID := range listenerIDs {
+		c.setupListener(elementID)
+	}
 }
 
 func (c *chromeWebView) GetCurrentURL() string {
