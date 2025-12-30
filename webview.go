@@ -1,4 +1,4 @@
-package webview
+package rod_wrap
 
 // WebView はブラウザ操作のインターフェース
 type WebView interface {
