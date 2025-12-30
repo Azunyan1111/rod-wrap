@@ -10,6 +10,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/go-rod/stealth"
 )
 
 type chromeWebView struct {
@@ -64,7 +65,8 @@ func NewChromeWebView(opts ...ChromeOption) WebView {
 		Context(ctx).
 		MustConnect()
 
-	page := browser.MustPage("")
+	// stealthモードでページを作成（自動化検出を回避）
+	page := stealth.MustPage(browser)
 
 	// ウィンドウサイズを設定
 	page.MustSetWindow(0, 0, 1280, 720)

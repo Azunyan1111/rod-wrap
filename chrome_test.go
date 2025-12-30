@@ -55,7 +55,7 @@ func TestChromeWebView_WithProfile(t *testing.T) {
 		t.Errorf("expected https://example.com/, got %s", url)
 	}
 
-	time.Sleep(time.Second * 5)
+	time.Sleep(time.Second * 30)
 
 	t.Logf("Successfully navigated with custom profile")
 }
@@ -199,6 +199,22 @@ func TestChromeWebView_Listener(t *testing.T) {
 	if value != "" {
 		t.Errorf("expected empty after remove listener, got '%s'", value)
 	}
+}
+
+// TestBot は https://deviceandbrowserinfo.com/are_you_a_bot を開いて
+// Bot判定されないことを確認するテスト
+func TestBot(t *testing.T) {
+	wv := NewChromeWebView()
+	defer wv.Destroy()
+
+	wv.Navigate("https://deviceandbrowserinfo.com/are_you_a_bot")
+	time.Sleep(60 * 5 * time.Second)
+
+	content := wv.GetValue("body")
+	if !strings.Contains(content, "You are human") {
+		t.Errorf("Bot detected!")
+	}
+	t.Logf("Bot test completed successfully")
 }
 
 // findDefaultProfile はDefaultディレクトリのプロファイルを返すテストヘルパー
