@@ -201,6 +201,20 @@ func TestChromeWebView_Listener(t *testing.T) {
 	}
 }
 
+func TestChromeWebView_Headless(t *testing.T) {
+	wv := NewChromeWebView(WithHeadless())
+	defer wv.Destroy()
+
+	wv.Navigate("https://example.com/")
+
+	url := wv.GetCurrentURL()
+	if !strings.HasPrefix(url, "https://example.com") {
+		t.Errorf("expected https://example.com, got %s", url)
+	}
+
+	t.Logf("Headless mode test completed successfully")
+}
+
 // TestBot は https://deviceandbrowserinfo.com/are_you_a_bot を開いて
 // Bot判定されないことを確認するテスト
 func TestBot(t *testing.T) {

@@ -40,13 +40,17 @@ func NewChromeWebView(opts ...ChromeOption) WebView {
 		slog.Error("Chrome not found in system")
 	}
 
-	// ヘッドフルモードでブラウザを起動
+	// ブラウザを起動
 	l := launcher.New().
 		Bin(chromePath).
-		Headless(false).
-		Delete("no-startup-window").
+		Headless(options.headless).
 		Delete("use-mock-keychain").
 		Set("window-size", "1280,720")
+
+	// ヘッドフルモードの場合はウィンドウ表示を有効化
+	if !options.headless {
+		l = l.Delete("no-startup-window")
+	}
 
 	// プロファイル設定
 	if options.userDataDir != "" {

@@ -13,6 +13,7 @@ type chromeOptions struct {
 	profileDir  string
 	userDataDir string
 	tmpDir      string // 自動作成された一時ディレクトリ（Destroy時に削除）
+	headless    bool
 }
 
 // WithProfile は指定したプロファイルディレクトリでChromeを起動する
@@ -26,6 +27,13 @@ func WithProfile(profileDir string) ChromeOption {
 func WithUserDataDir(userDataDir string) ChromeOption {
 	return func(o *chromeOptions) {
 		o.userDataDir = userDataDir
+	}
+}
+
+// WithHeadless はヘッドレスモードでChromeを起動する
+func WithHeadless() ChromeOption {
+	return func(o *chromeOptions) {
+		o.headless = true
 	}
 }
 
