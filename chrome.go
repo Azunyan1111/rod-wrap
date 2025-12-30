@@ -304,9 +304,23 @@ func (c *chromeWebView) Destroy() {
 	c.browser.Close()
 
 	// 一時ディレクトリが存在する場合は削除
+	// Chromeがファイルを解放するまでリトライする
 	if c.tmpDir != "" {
-		if err := os.RemoveAll(c.tmpDir); err != nil {
-			slog.Warn("Failed to remove temp dir", "path", c.tmpDir, "error", err)
+		c.removeTmpDirWithRetry()
+	}
+}
+
+func (c *chromeWebView) removeTmpDirWithRetry() {
+	maxRetries := 100
+	for i := 0; i < maxRetries; i++ {
+		err := os.RemoveAll(c.tmpDir)
+		if err == nil {
+			return
+		}
+		if i < maxRetries-1 {
+			time.Sleep(100 * time.Millisecond)
+		} else {
+			slog.Warn("Failed to remove temp dir after retries", "path", c.tmpDir, "error", err)
 		}
 	}
 }
